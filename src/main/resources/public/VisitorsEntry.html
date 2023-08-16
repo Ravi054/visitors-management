@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visitors Details</title>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.4/css/jquery.dataTables.min.css">
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.4/js/jquery.dataTables.min.js"></script>
+    <script src="VisitorsEntry.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+</head>
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+
+.btn {
+  padding: 4px 16px;
+  font-size: 12px;
+  cursor: pointer;
+  margin-right:2px;
+  float: right;
+}
+
+.success {
+	  font-size : 17px;
+	  color:green;
+	  display:none;
+}
+
+.success.display-success {
+	  display:block;
+}
+
+.header {
+ z-index: 999;
+  position: fixed;
+  padding: 15px;
+  text-align: center;
+  align:center;
+  background: #428bca;
+  color: white;
+  font-size: 30px;
+  width: 100%;
+  top:0;
+  height:80px;
+}
+
+.footer {
+position: fixed;
+bottom: 0;
+width: 100%;
+background: #428bca;
+color: white;
+text-align: center;
+height:20px;
+z-index: 999
+}
+
+.searchcontainer {
+padding-top:100px;
+padding-bottom:20px;
+}
+
+
+.search.label {
+margin-right: 20px;
+}
+
+#contentBody {
+margin-top:90px;
+}
+
+.logo {
+        max-width: 50px;
+      }
+
+</style>
+<body>
+
+<div class="header">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHtUWVSSp6RATjhAiM65KvtCYacrmsn2AoRN1t_Bynl7XG-L4rm3DX5O3TkfVowhxMrEU&usqp=CAU" alt="Logo" class="logo" align="left">
+    <p>Visitors Management Portal  <button class="btn btn-primary" onclick="toggleAddForm(false)"><p style="margin-top: 8px;">Add <i class="fa fa-plus"></i></p></button>
+    <button class="btn btn-primary" onclick="downloadData()"><p style="margin-top: 8px;">Export <i class="fa fa-download"></i></p></button>
+</div>
+
+
+<div id="addData">
+
+<div class="row" id="contentBody" style="display: none;">
+    <div class="col-md-6 col-sm-12 col-lg-6 col-md-offset-3">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Enter Visitors Details Here
+            </div>
+            <div class="panel-body">
+                <form name="myform" id="postCall" method="post">
+
+                    <p style="text-align:center" class="success register-success"></p>
+
+                    <input id="fileName" name="fileName" class="form-control" type="hidden">
+                    <div class="form-group">
+                        <label for="name">Name *</label>
+                        <input id="name" name="name" class="form-control" type="text" data-validation="required">
+                        <span id="error_name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number">Phone Number *</label>
+                        <input id="number" name="number" class="form-control" type="text" data-validation="required">
+                        <span id="error_number" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="whomToMeet">Whom To Meet *</label>
+                        <input id="whomToMeet" name="whomToMeet"  class="form-control" data-validation="required" >
+                        <span id="error_whomToMeet" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="purpose">Purpose</label>
+                        <textarea class="form-control" rows="3" id="purpose" name="purpose"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label style="word-wrap:break-word"></label>
+                        <input type="checkbox" id="parcel" name="parcel" value="1"> Parcel
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inTime">In Time * </label>
+                        <input type="datetime-local" name="inTime" id="inTime" class="form-control">
+                        <span id="error_inTime" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="outTime">Out Time </label>
+                        <input type="datetime-local" name="outTime" id="outTime" class="form-control">
+                 <!--       <span id="error_outTime" class="text-danger"></span> -->
+                    </div>
+
+                    <div class="form-group">
+                        <label for="remark">Remark</label>
+                        <textarea class="form-control" rows="3" id="remark" name="remark"></textarea>
+                    </div>
+
+                    <button id="submit" type="button" value="submit" class="btn btn-primary center">Submit</button>
+                    <button type="button" class="btn btn-danger" onclick="toggleAddForm(false)">Cancel</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+
+</div>
+
+
+    <div id="searchcontainer" style="width:90%;margin-left: auto;
+  margin-right: auto;">
+    <div class="searchcontainer">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Visitors Data</div>
+            <div class="panel-body">
+    <form class="search" name="searchData">
+    <label for="fromDate" style="margin-right:5px;">Start Date </label>
+    <input value="fromDate" type="date" id="fromDate" name="fromDate">
+
+    <label for="toDate" style="margin-right:5px;margin-left:5px;">End Date </label>
+    <input value="toDate" type="date" id="toDate" name="toDate">
+
+    <input class="btn btn-primary" id="validateButton" type="button" onclick="intializeOrReloadDataTable()" value="Search">
+        <div id="message" style="padding-left:67px;font-weight:bold;margin-top:2px;"></div>
+    </form>
+                <div id="visitorsData" style="margin-top:20px;" class="panel-footer">
+                    <table class="table table-striped table-bordered table-class" style="width:100%;" id= "table-id" >
+                        <thead>
+                        <tr style="background-color: #b8b8b8;">
+                            <th style="min-width:50px; width:50px;">SL No.</th>
+                            <th style="min-width:90px; width:90px;">Name</th>
+                            <th style="min-width:90px; width:90px;">Number</th>
+                            <th style="min-width:95px; width:95px;">Whom To Meet</th>
+                            <th style="min-width:90px; width:90px;">Purpose</th>
+                            <th style="min-width:40px; width:40px;">Parcel</th>
+                            <th style="min-width:110px; width:110px;">In Time</th>
+                            <th style="min-width:110px; width:110px;">Out Time</th>
+                            <th style="min-width:90px; width:90px;">Remark</th>
+                            <th style="min-width:95px; width:95px;">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="visitorsDataBody">
+                        </tbody>
+                        <tfoot id="visitorsDataFooter" style="display: table-footer-group;">
+                        <tr>
+                            <td colspan="9" class="text-center">Loading...</td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<div class="footer">
+    Visitor Management.
+</div>
+<div class="w-100" style="height:25px;"></div>
+</body>
+</html>
+
+
