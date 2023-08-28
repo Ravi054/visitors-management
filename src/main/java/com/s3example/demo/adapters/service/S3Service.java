@@ -15,8 +15,10 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,12 +58,12 @@ public class S3Service {
     }
 
     //Object level operations
-    public void putObject(String bucketName, VisitorsModel visitorsModel) throws IOException {
-
+    public void putObject(String bucketName, VisitorsModel visitorsModel) throws IOException, ParseException {
         if(StringUtils.isNotBlank(visitorsModel.getFileName())) {
             amazonS3Client.deleteObject(bucketName, visitorsModel.getFileName());
         }
-
+        visitorsModel.setInTime(getDateFormat(visitorsModel.getInTime()));
+        visitorsModel.setOutTime(getDateFormat(visitorsModel.getOutTime()));
         JSONObject object = new JSONObject(visitorsModel);
         Date date = new Date();
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy_hh-mm-ss");
@@ -120,6 +122,16 @@ public class S3Service {
                     }
                 });
         return modelMap;
+    }
+
+    public String getDateFormat(String date) throws ParseException {
+
+        if (date != null && !date.isEmpty()) {
+            SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
+            SimpleDateFormat outputFormatter = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            return outputFormatter.format(inputFormatter.parse(date));
+        }
+        return "-";
     }
 
     public void downloadObject(String bucketName, String objectName){

@@ -17,6 +17,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class S3Controller {
     }
 
     @PostMapping(value = "/objects", consumes = "application/json")
-    public String createObject(@RequestBody VisitorsModel visitorsModel) throws IOException {
+    public String createObject(@RequestBody VisitorsModel visitorsModel) throws IOException, ParseException {
         if (visitorsModel.getName() != null && visitorsModel.getName().trim() != "") {
             s3Service.putObject("test-ravi-bucket2", visitorsModel);
             return "Ok";

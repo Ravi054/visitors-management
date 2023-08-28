@@ -52,32 +52,32 @@ var dataTable = null;
 
 function intializeOrReloadDataTable() {
 
+    var fromDate = $("#fromDate").val();
+    var toDate = $("#toDate").val();
 
-    if (dataTable != null) {
+    //$("#validateButton").on("click", function() {
+
+           var visitorsData = document.getElementById("visitorsData");
+
+        if (toDate < fromDate) {
+            $("#message").text("End Date must be greater than or equal to  Start Date").css("color", "red");
+                    visitorsData.style.display ='none';
+            return;
+        } else {
+            $("#message").text("");
+            visitorsData.style.display ='block';
+        }
+    //});
+
+if (dataTable != null) {
 
         dataTable.clear().draw();
 
         dataTable.destroy();
 
     }
-
     var visitorsDataFooter = document.getElementById("visitorsDataFooter");
-    visitorsDataFooter.style.display ='table-footer-group';
-
-    var fromDate = $("#fromDate").val();
-    var toDate = $("#toDate").val();
-
-    $("#validateButton").on("click", function() {
-
-           var fromDate = $("#fromDate").val();
-           var toDate = $("#toDate").val();
-
-        if (toDate < fromDate) {
-            $("#message").text("End Date must be greater than or equal to  Start Date").css("color", "red");
-        } else {
-            $("#message").text("");
-        }
-    });
+        visitorsDataFooter.style.display ='table-footer-group';
 
     $.ajax({
 
@@ -401,6 +401,16 @@ function formSubmit(event) {
 
     }
 
+    if($("#inTime").val() != null && $("#outTime").val() != null && $("#inTime").val() != '' && $("#outTime").val() != '') {
+    if ($("#outTime").val() < $("#inTime").val()) {
+                $("#inTime").css("border-color", "#FF0000");
+                $("#error_inTime").text("To Time must be greater than or equal to  In Time");
+                return;
+            } else {
+                $("#error_inTime").text("");
+            }
+    }
+
     event.preventDefault();
 
     var data = JSON.stringify($("#postCall").serializeObject());
@@ -457,12 +467,20 @@ function toggleAddForm(isEdit) {
 
   var y = document.getElementById("searchcontainer");
 
+var addId = document.getElementById("addId");
+
+var exportId = document.getElementById("exportId");
+
   if (isEdit || x.style.display === "none") {
     x.style.display = "block";
     y.style.display = "none";
+    exportId.style.display = "none";
+    $('#addId').html("View <i class='fa fa-eye'></i>")
   } else {
     x.style.display = "none";
     y.style.display = "block";
+    exportId.style.display = "block";
+    $('#addId').html("Add <i class='fa fa-plus'></i>")
   }
 }
 
